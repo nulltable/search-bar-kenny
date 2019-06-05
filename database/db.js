@@ -10,7 +10,7 @@ const Sequelize = require('sequelize');
 
 // connection.query('DROP DATABASE IF EXISTS Search', () => {});
 // connection.query('CREATE DATABASE Search', () => {
-const sequelize = new Sequelize('search', 'root', 'student', {
+const sequelize = new Sequelize('search', 'root', '', {
 	host: 'localhost',
 	dialect: 'mysql',
 	logging: false

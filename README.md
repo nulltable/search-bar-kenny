@@ -67,11 +67,11 @@ In Chrome, go to localhost:3030.
 |---|---| --- | --- | --- |
 | 1 | /cuisines | GET |  http://localhost:3030/cuisines | Get all cuisine data |
 | 2 | /locations | GET | http://localhost:3030/locations | Get all location data |
-| 3 | /search |GET | http://localhost:3030/search | Get data for one restaurant |
-| 4 | /search | POST | http://localhost:3030/search | Create new search query to user's browser history |
-| 5 | /search | DELETE | http://localhost:3030/search | Delete search query from user's browser history |
+| 3 | /search/{id} |GET | http://localhost:3030/search | Get data for one restaurant |
+| 4 | /search/create | POST | http://localhost:3030/search | Create new search query to user's browser history |
+| 5 | /search/{id} | DELETE | http://localhost:3030/search | Delete search query from user's browser history |
 | 6 | /restaurants | GET | http://localhost:3030/restaurants | Get all restaurant data with restaurant name, location, and cuisine |
-| 7 | /restaurants | POST | http://localhost:3030/restaurants | Create a new restaurant listing in database |
-| 8 | /restaurants | PUT | http://localhost:3030/restaurants | Update a restaurant in database |
-| 9 | /restaurants | DELETE | http://localhost:3030/restaurants |Delete a restaurant in database |
+| 7 | /restaurants/{id} | POST | http://localhost:3030/restaurants | Create a new restaurant listing in database |
+| 8 | /restaurants/{id} | PUT | http://localhost:3030/restaurants | Update a restaurant in database |
+| 9 | /restaurants/{id} | DELETE | http://localhost:3030/restaurants |Delete a restaurant in database |
 

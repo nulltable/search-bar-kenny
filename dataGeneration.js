@@ -38,7 +38,7 @@ const compressData = (filePath) => {
 const generateData = () => {
 	writer.pipe(fs.createWriteStream('data.csv'));
 
-	for (let i = 0; i < 10000000; i++) {
+	for (let i = 0; i < 1000000; i++) {
 		const randomCuisineNumber = Math.floor(Math.random() * cuisine.length);
 		const randomNumber = Math.floor(Math.random() * restaurants.length);
 
@@ -55,11 +55,10 @@ const generateData = () => {
 			console.log(counter);
 		}
 	}
-
-	// After .csv file has been created, compress the .csv file into a // gzip file
-	compressData('data.csv');
 	writer.end();
 	console.log('done');
 };
 
+// After .csv file has been created, compress the .csv file into a // gzip file
 generateData();
+compressData('data.csv');

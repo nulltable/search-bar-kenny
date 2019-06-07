@@ -81,28 +81,3 @@ CREATE TABLE `search history` (
 ALTER TABLE `Restaurants` ADD FOREIGN KEY (cuisine_id) REFERENCES `Cuisines` (`id`);
 ALTER TABLE `Restaurants` ADD FOREIGN KEY (location id) REFERENCES `Locations` (`id`);
 ALTER TABLE `search history` ADD FOREIGN KEY (user_id) REFERENCES `Users` (`id`);
-
--- ---
--- Table Properties
--- ---
-
--- ALTER TABLE `Restaurants` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `Locations` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `Cuisines` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `Users` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `search history` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- ---
--- Test Data
--- ---
-
--- INSERT INTO `Restaurants` (`id`,`name`,`cuisine_id`,`location id`) VALUES
--- ('','','','');
--- INSERT INTO `Locations` (`id`,`city`,`county`) VALUES
--- ('','','');
--- INSERT INTO `Cuisines` (`id`,`cuisine`) VALUES
--- ('','');
--- INSERT INTO `Users` (`id`,`username`) VALUES
--- ('','');
--- INSERT INTO `search history` (`id`,`user_id`,`search query`) VALUES
--- ('','','');

@@ -29,7 +29,6 @@ dist/
 public/bundle.js
 package-lock.json
 data.csv.gz
-restaurantData copy.csv
 restaurantData copy.csv.zip
 *.csv
 

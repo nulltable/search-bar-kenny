@@ -1,12 +1,11 @@
 const fs = require('fs');
 const csvWriter = require('csv-write-stream');
 const faker = require('faker');
-const zlib = require('zlib');
-const path = require('path');
 
 const writer = csvWriter();
 
-let counter = 0;
+let counter = 1;
+let restaurantId = 0;
 const cuisine = [
 	'Japanese',
 	'Chinese',
@@ -32,42 +31,40 @@ function fakerSamples() {
 
 fakerSamples();
 
-// attempt to write compression helper function
-// const compressData = (filePath) => {
-// 	const gzip = zlib.createGzip();
-// 	const inp = fs.createReadStream(filePath);
-// 	const out = fs.createWriteStream(`${filePath}.gz`);
-// 	inp.pipe(gzip).pipe(out);
-// };
 
 const generateRestaurantData = () => {
-	writer.pipe(fs.createWriteStream('restaurant_data.csv'));
+	writer.pipe(fs.createWriteStream('test_restaurant_data.csv'));
 
 	let i = 0;
 	function write() {
 		let ok = true;
 
-		while (i < 10000000 && ok) {
+		while (i < 1000 && ok) {
 			i++;
 			const randomNumber = Math.floor(Math.random() * restaurants.length);
 			const randomRestaurant = restaurants[randomNumber];
+			const randomLocation = locations[randomNumber];
 
-			if (i === 9999999) {
+			if (i === 999) {
 				writer.write({
-				id: counter++,
-				name: randomRestaurant.charAt(0).toUpperCase() + randomRestaurant.slice(1),
-			}, console.log('finished writing'));
+					id: counter++,
+					name: randomRestaurant.charAt(0).toUpperCase() + randomRestaurant.slice(1),
+					city: randomLocation[0],
+					county: randomLocation[1],
+				}, console.log('finished writing'));
 			} else {
 				ok = writer.write({
 					id: counter++,
 					name: randomRestaurant.charAt(0).toUpperCase() + randomRestaurant.slice(1),
+					city: randomLocation[0],
+					county: randomLocation[1],
 				});
 			}
-			if (counter % 100000 === 0) {
+			if (counter % 100 === 0) {
 				console.log(counter);
 			}
 		}
-		if (i < 10000000) {
+		if (i < 1000) {
 			writer.once('drain', write);
 		}
 	}
@@ -76,68 +73,65 @@ const generateRestaurantData = () => {
 
 // generateRestaurantData();
 
-const generateLocationData = () => {
-	writer.pipe(fs.createWriteStream('location_data.csv'));
+// const generateLocationData = () => {
+// 	writer.pipe(fs.createWriteStream('location_data.csv'));
 
-	let i = 0;
-	function write() {
-		let ok = true;
-		while (i < 10000000 && ok) {
-			i++;
-			const randomNumber = Math.floor(Math.random() * restaurants.length);
-			const randomLocation = locations[randomNumber];
-			if (i === 9999999) {
-				writer.write({
-				id: counter++,
-				city: randomLocation[0],
-				county: randomLocation[1]
-			}, console.log('finish writing'));
-			} else {
-				ok = writer.write({
-					id: counter++,
-					city: randomLocation[0],
-					county: randomLocation[1]
-				});
-				if (counter % 100000 === 0) {
-					console.log(counter);
-				}
-			}
-		}
-		if (i < 10000000) {
-			writer.once('drain', write);
-		}
-	}
-	write();
-};
+// 	let i = 0;
+// 	function write() {
+// 		let ok = true;
+// 		while (i < 10000000 && ok) {
+// 			i++;
+// 			const randomNumber = Math.floor(Math.random() * restaurants.length);
+// 			const randomLocation = locations[randomNumber];
+// 			if (i === 9999999) {
+// 				writer.write({
+// 					id: counter++,
+// 					city: randomLocation[0],
+// 					county: randomLocation[1]
+// 				}, console.log('finish writing'));
+// 			} else {
+// 				ok = writer.write({
+// 					id: counter++,
+// 					city: randomLocation[0],
+// 					county: randomLocation[1]
+// 				});
+// 				if (counter % 100000 === 0) {
+// 					console.log(counter);
+// 				}
+// 			}
+// 		}
+// 		if (i < 10000000) {
+// 			writer.once('drain', write);
+// 		}
+// 	}
+// 	write();
+// };
 
 // generateLocationData();
 
 const generateCuisineData = () => {
-	writer.pipe(fs.createWriteStream('cuisine_data.csv'));
+	writer.pipe(fs.createWriteStream('test_cuisine_data.csv'));
 
 	let i = 0;
 	function write() {
 		let ok = true;
-		while (i < 10000000 && ok) {
+		while (i < cuisine.length - 1 && ok) {
 			i++;
-			const randomNumber = Math.floor(Math.random() * cuisine.length);
-			if (i === 9999999) {
+			// const randomNumber = Math.floor(Math.random() * cuisine.length);
+			if (i === cuisine.length - 1) {
 				writer.write({
-				id: counter++,
-				cuisine: cuisine[randomNumber]
-			}, console.log('finished writing'));	
+					id: counter++,
+					cuisine: cuisine[i]
+				}, console.log('finished writing'));
 			} else {
-			ok = writer.write({
-				id: counter++,
-				cuisine: cuisine[randomNumber]
-			});
-
+				ok = writer.write({
+					id: counter++,
+					cuisine: cuisine[i]
+				});
 			}
-			if (i % 100000 === 0) {
-				console.log(i);
-			}
+			console.log(i);
 		}
-		if (i < 10000000 ) {
+		if (i < cuisine.length) {
 			writer.once('drain', write);
 		}
 	}
@@ -149,15 +143,14 @@ const generateCuisineData = () => {
 const generateUsersData = () => {
 	const usersWriter = csvWriter();
 
-	usersWriter.pipe(fs.createWriteStream('users_data.csv'));
+	usersWriter.pipe(fs.createWriteStream('test_users_data.csv'));
 	let i = 0;
 	function write() {
 		let ok = true;
 		while (i < 1000000 && ok) {
-		// for (i = 0; (i < 1000000) && (ok); i++) {
 			i++;
-			
 			const randomNumber = Math.floor(Math.random() * usernames.length);
+
 			if (i === 999999) {
 				usersWriter.write({
 					id: counter++,
@@ -238,4 +231,58 @@ const generateSearchHistoryData = () => {
 	// searchHistoryWriter.end();
 };
 
-// generateSearchHistoryData();
+generateSearchHistoryData();
+
+const generateRestaurantCuisineData = () => {
+	writer.pipe(fs.createWriteStream('test_restaurant_cuisine_data.csv'));
+
+	let i = 0;
+	function write() {
+		let ok = true;
+		while (restaurantId < 1000 && ok) {
+			i++;
+			restaurantId++;
+			const numberOfCuisines = Math.floor(Math.random() * (3 - 1) + 1);
+			const cuisine1 = Math.floor(Math.random() * (8 - 1) + 1);
+			if (restaurantId === 999) {
+				writer.write({
+					id: i,
+					restaurant_id: restaurantId,
+					cuisine_id: cuisine1
+				}, console.log('finished writing'));
+			} else if (numberOfCuisines === 2) {
+				let cuisine2 = cuisine1;
+				if (cuisine1 === cuisine.length) {
+					cuisine2 = 0;
+				} else {
+					cuisine2 += 1;
+				}
+				writer.write({
+					id: i,
+					restaurant_id: restaurantId,
+					cuisine_id: cuisine1
+				});
+				writer.write({
+					id: i += 1,
+					restaurant_id: restaurantId,
+					cuisine_id: cuisine2
+				});
+			} else {
+				ok = writer.write({
+					id: i,
+					restaurant_id: restaurantId,
+					cuisine_id: cuisine1
+				});
+			}
+			if (restaurantId % 100 === 0) {
+				console.log(restaurantId);
+			}
+		}
+		if (restaurantId < 1000) {
+			writer.once('drain', write);
+		}
+	}
+	write();
+};
+
+// generateRestaurantCuisineData();

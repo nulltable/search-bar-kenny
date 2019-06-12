@@ -65,46 +65,14 @@ In Chrome, go to localhost:3030.
 ### CRUD API
 | # | Route | Method | Full  Route | Description |
 |---|---| --- | --- | --- |
-| 1 | /cuisines | GET |  http://localhost:3030/cuisines | Get all cuisine data |
-| 2 | /locations | GET | http://localhost:3030/locations | Get all location data |
-| 3 | /restaurants/{id} | GET | http://localhost:3030/restaurants/57 | Get  restaurant's  name, location, and cuisine |
-| 4 | /restaurants/create/{id} | POST | http://localhost:3030/restaurants/create | Add new restaurant to database |
-| 5 | /restaurants/update/{id} | PUT | http://localhost:3030/restaurants/update/17 | Given a restaurant id update that restaurant in database |
-| 6 | /restaurants/delete/{id} | DELETE | http://localhost:3030/restaurants/delete/27 | Delete restaurant of id 27 from the database |
-| 7 | /users/{id} | GET | http://localhost:3030/users/385 | Retrieve username for a given user id
+| 1 | /locations | GET | http://localhost:3030/locations | Get all location data |
+| 2 | /restaurants/{id} | GET | http://localhost:3030/restaurants/57 | Get  restaurant's  name, location, and cuisine |
+| 3 | /restaurants/create/{id} | POST | http://localhost:3030/restaurants/create | Add new restaurant to database |
+| 4 | /restaurants/update/{id} | PUT | http://localhost:3030/restaurants/update/17 | Given a restaurant id update that restaurant in database |
+| 5 | /restaurants/delete/{id} | DELETE | http://localhost:3030/restaurants/delete/27 | Delete restaurant of id 27 from the database |
+| 6 | /users/{id} | GET | http://localhost:3030/users/385 | Retrieve username for a given user id
 
 ### Status codes and Response objects
-
-- GET (/cuisines) 
-  HTTP status response of 200 when successfully retrieves all stored cuisines.
-```javascript   
-  [
-    { id: 1, 
-      name: 'Japanese' 
-    },
-    { id: 2, 
-      name: 'Chinese' 
-    },
-    { id: 3, 
-      name: 'New American' 
-    },
-    { id: 4, 
-      name: 'Mexican' 
-    },
-    { id: 5, 
-      name: 'Korean' 
-    },
-    { id: 6, 
-      name: 'Indian' 
-    },
-    { id: 7, 
-      name: 'French' 
-    },
-    { id: 8, 
-    name: 'Taiwanese'
-     }
-  ]
-```
 
 - GET (/locations)
 HTTP status response of 200 when successfully retrieves all locations

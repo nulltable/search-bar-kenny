@@ -24,7 +24,7 @@ const usernames = [];
 function fakerSamples() {
 	for (let i = 0; i < 10000; i++) {
 		restaurants.push(faker.lorem.word());
-		locations.push([faker.address.county(), faker.address.city()]);
+		locations.push([faker.address.city()]);
 		usernames.push([faker.internet.userName()]);
 	}
 }
@@ -39,32 +39,30 @@ const generateRestaurantData = () => {
 	function write() {
 		let ok = true;
 
-		while (i < 1000 && ok) {
+		while (i < 10000000 && ok) {
 			i++;
 			const randomNumber = Math.floor(Math.random() * restaurants.length);
 			const randomRestaurant = restaurants[randomNumber];
 			const randomLocation = locations[randomNumber];
 
-			if (i === 999) {
+			if (i === 9999999) {
 				writer.write({
 					id: counter++,
 					name: randomRestaurant.charAt(0).toUpperCase() + randomRestaurant.slice(1),
 					city: randomLocation[0],
-					county: randomLocation[1],
 				}, console.log('finished writing'));
 			} else {
 				ok = writer.write({
 					id: counter++,
 					name: randomRestaurant.charAt(0).toUpperCase() + randomRestaurant.slice(1),
 					city: randomLocation[0],
-					county: randomLocation[1],
 				});
 			}
-			if (counter % 100 === 0) {
+			if (counter % 100000 === 0) {
 				console.log(counter);
 			}
 		}
-		if (i < 1000) {
+		if (i < 10000000) {
 			writer.once('drain', write);
 		}
 	}
@@ -110,14 +108,13 @@ const generateRestaurantData = () => {
 // generateLocationData();
 
 const generateCuisineData = () => {
-	writer.pipe(fs.createWriteStream('test_cuisine_data.csv'));
+	writer.pipe(fs.createWriteStream('cuisine_data.csv'));
 
 	let i = 0;
 	function write() {
 		let ok = true;
 		while (i < cuisine.length - 1 && ok) {
 			i++;
-			// const randomNumber = Math.floor(Math.random() * cuisine.length);
 			if (i === cuisine.length - 1) {
 				writer.write({
 					id: counter++,
@@ -143,7 +140,7 @@ const generateCuisineData = () => {
 const generateUsersData = () => {
 	const usersWriter = csvWriter();
 
-	usersWriter.pipe(fs.createWriteStream('test_users_data.csv'));
+	usersWriter.pipe(fs.createWriteStream('users_data.csv'));
 	let i = 0;
 	function write() {
 		let ok = true;
@@ -166,7 +163,6 @@ const generateUsersData = () => {
 				}
 			}
 		}
-		// }
 		if (i < 1000000) {
 			usersWriter.once('drain', write);
 		}
@@ -207,13 +203,13 @@ const generateSearchHistoryData = () => {
 			if (i === 0) {
 				searchHistoryWriter.write({
 					id: counter++,
-					user_id: Math.floor(Math.random() * 1000000),
+					user_id: Math.floor(Math.random() * (1000000 - 1) + 1),
 					search_query: randomQuery
 				}, console.log('finished writing'));
 			} else {
 				ok = searchHistoryWriter.write({
 					id: counter++,
-					user_id: Math.floor(Math.random() * 1000000),
+					user_id: Math.floor(Math.random() * (1000000 - 1) + 1),
 					search_query: randomQuery
 				});
 
@@ -231,7 +227,7 @@ const generateSearchHistoryData = () => {
 	// searchHistoryWriter.end();
 };
 
-generateSearchHistoryData();
+// generateSearchHistoryData();
 
 const generateRestaurantCuisineData = () => {
 	writer.pipe(fs.createWriteStream('test_restaurant_cuisine_data.csv'));
@@ -239,6 +235,7 @@ const generateRestaurantCuisineData = () => {
 	let i = 0;
 	function write() {
 		let ok = true;
+
 		while (restaurantId < 1000 && ok) {
 			i++;
 			restaurantId++;
@@ -286,3 +283,68 @@ const generateRestaurantCuisineData = () => {
 };
 
 // generateRestaurantCuisineData();
+
+const generateCassandraCSVData = () => {
+	writer.pipe(fs.createWriteStream('cassandra_data.csv'));
+
+	let randomQuery;
+	let i = 0;
+	function write() {
+		let ok = true;
+
+		while (i < 50000000 && ok) {
+			i++;
+			const whichRandomQuery = Math.floor(Math.random() * 3);
+			const randomNumber = Math.floor(Math.random() * restaurants.length);
+			const randomUsername = usernames[Math.floor(Math.random() * usernames.length)];
+			const randomRestaurant = restaurants[randomNumber];
+			const randomLocation = locations[randomNumber];
+
+			const numberOfCuisines = Math.floor(Math.random() * (3 - 1) + 1);
+			const firstCuisine = Math.floor(Math.random() * (8 - 1) + 1);
+			let secondCuisine = firstCuisine;
+			if (numberOfCuisines === 2) {
+				if (firstCuisine === cuisine.length) {
+					secondCuisine = 0;
+				} else {
+					secondCuisine += 1;
+				}
+			} else {
+				secondCuisine = 'none';
+			}
+
+			if (whichRandomQuery === 0) {
+				randomQuery = cuisine[firstCuisine];
+			} else if (whichRandomQuery === 1) {
+				randomQuery = randomRestaurant;
+			} else if (whichRandomQuery === 2) {
+				randomQuery = randomLocation;
+			}
+
+			const writeObject = {
+				id: counter++,
+				name: randomRestaurant.charAt(0).toUpperCase() + randomRestaurant.slice(1),
+				city: randomLocation[0],
+				cuisine1: firstCuisine,
+				cuisine2: secondCuisine,
+				username: randomUsername,
+				search_query: randomQuery
+			};
+
+			if (i === 49999999) {
+				writer.write(writeObject, console.log('finished writing'));
+			} else {
+				ok = writer.write(writeObject);
+			}
+			if (counter % 100000 === 0) {
+				console.log(counter);
+			}
+		}
+		if (i < 50000000) {
+			writer.once('drain', write);
+		}
+	}
+	write();
+};
+
+generateCassandraCSVData();

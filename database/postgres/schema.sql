@@ -1,3 +1,7 @@
+DROP DATABASE IF EXISTS search;
+
+CREATE DATABASE search;
+
 -- ---
 -- Table 'Restaurants'
 -- 
@@ -22,8 +26,6 @@ CREATE TABLE Cuisines (
   id SERIAL PRIMARY KEY,
   cuisine VARCHAR(25) NOT NULL
 );
-
--- SELECT setval(pg_get_serial_sequence('Cuisines', 'id'), coalesce(max(id),1), false) FROM Cuisines;
 
 
 -- ---
@@ -66,7 +68,7 @@ FROM '/Users/kenny/Documents/hrsf/search-bar-kenny/restaurantprocessed.csv'
 DELIMITER ',' CSV HEADER;
 
 COPY Cuisines(id, cuisine)
-FROM '/Users/kenny/Documents/hrsf/search-bar-kenny/test_cuisine_data.csv'
+FROM '/Users/kenny/Documents/hrsf/search-bar-kenny/cuisine_data.csv'
 DELIMITER ',' CSV HEADER;
 
 COPY Users(id, username)
@@ -78,7 +80,7 @@ FROM '/Users/kenny/Documents/hrsf/search-bar-kenny/search_history_data.csv'
 DELIMITER ',' CSV HEADER;
 
 COPY Restaurants_Cuisines(id, restaurant_id, cuisine_id)
-FROM '/Users/kenny/Documents/hrsf/search-bar-kenny/test_restaurant_cuisine_data.csv'
+FROM '/Users/kenny/Documents/hrsf/search-bar-kenny/restaurant_cuisine_data.csv'
 DELIMITER ',' CSV HEADER;
 
 -- ---
@@ -102,3 +104,19 @@ ON Users(username);
 
 CREATE INDEX Search_history_Index
 ON Search_History (search_query);
+
+-- ---
+-- Sequences 
+-- ---
+
+CREATE SEQUENCE restaurant_id_seq MINVALUE 10000001;
+ALTER TABLE restaurants ALTER id SET DEFAULT nextval('restaurant_id_seq');
+ALTER SEQUENCE restaurant_id_seq OWNED BY restaurants.id;
+
+CREATE SEQUENCE restaurant_cuisine_id_seq MINVALUE 1499572;
+ALTER TABLE restaurants_cuisines ALTER id SET DEFAULT nextval('restaurant_cuisine_id_seq');
+ALTER SEQUENCE restaurant_cuisine_id_seq OWNED BY restaurants_cuisines.id;
+
+CREATE SEQUENCE search_history_id_seq MINVALUE 50000000;
+ALTER TABLE search_history ALTER id SET DEFAULT nextval('search_history_id_seq');
+ALTER SEQUENCE search_history_id_seq OWNED BY search_history.id;

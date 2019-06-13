@@ -74,42 +74,124 @@ In Chrome, go to localhost:3030.
 
 ### Status codes and Response objects
 
-- GET (/locations)
-HTTP status response of 200 when successfully retrieves all locations
-Snippet example of JSON structure:
-```javascript 
-  [ 
-    {
-      id: 100,
-      city: 'West Kendrickside',
-      county: 'Bedfordshire'
-    }
-  ]
-```
 
-- GET (/restaurants/:id)
-HTTP response of 200 for successfully retrieiving restaurant's id, name, cuisine, and location
+- GET (/restaurants/:name)
+HTTP response of 200 for successfully retrieving restaurant's id, name, and location. Limited to 300 per request.
 
 ```javascript
   [
     {
-      id: 99,
-      name: 'Cupiditate',
-      location: 'Buckinghamshire, Kaleighville',
-      cuisine: 'Korean'
-    }
+        "id": 2,
+        "name": "nemo",
+        "location": "East Lyla"
+    },
+    {
+        "id": 4,
+        "name": "nemo",
+        "location": "Reillyberg"
+    },
+    {
+        "id": 7,
+        "name": "nemo",
+        "location": "South Augustine"
+    },
   ]
 ```
 
-- POST (/restaurants/create/:id)
+- GET (/restaurants/cuisine/:cuisineId)
+HTTP response of 200 for successfully retrieving restaurant's name, location, and type of cuisine. Limited to 300 per request.
+
+Cuisine id's:
+| id | cuisine |
+|---|---|
+|	1 |'Chinese', |
+|	2 |'New American', |
+|	3 |'Mexican', |
+|	4 |'Korean', |
+| 5 |'Indian', |
+|	6 |'French', |
+|	7 |'Taiwanese', |
+| 8 |'Mediterranean', |
+];
+
+```javascript
+  [
+    {
+        "name": "unde",
+        "location": "Flossiehaven",
+        "cuisine": "Chinese"
+    },
+    {
+        "name": "qui",
+        "location": "Travonshire",
+        "cuisine": "Chinese"
+    },
+    {
+        "name": "nemo",
+        "location": "East Lyla",
+        "cuisine": "Chinese"
+    },
+  ]
+```
+
+- GET (/restaurants/location/:location)
+HTTP response of 200 for successfully retrieving all restaurants of the requested location. Displays restaurant's name, location, and type of cuisine. Limited to 300 per request.
+
+```javascript
+  [
+    {
+        "id": 6,
+        "name": "excepturi",
+        "location": "Travonshire"
+    },
+    {
+        "id": 10,
+        "name": "qui",
+        "location": "Travonshire"
+    },
+    {
+        "id": 16,
+        "name": "deserunt",
+        "location": "Travonshire"
+    },
+  ]
+```
+
+- GET (/restaurants/nameAndLocation/:name&:location)
+HTTP response of 200 for successfully retrieving all restaurants of the requested name and location. Displays restaurant's name, location, and type of cuisine. Limited to 300 per request.
+
+Request for name='nemo' and location = 'Travonshire':
+```javascript
+  [
+    {
+        "id": 9671,
+        "name": "nemo",
+        "location": "Travonshire"
+    },
+    {
+        "id": 9675,
+        "name": "nemo",
+        "location": "Travonshire"
+    },
+    {
+        "id": 9693,
+        "name": "nemo",
+        "location": "Travonshire"
+    },
+  ]
+```
+
+- POST (/restaurants/create/)
 HTTP response of 201 when successfully added a new restaurant to database
 Request to add new restaurant needs the following in req.body:
 ```javascript
-  {
-    name: 'API bar and grill',
-    cuisine: 'RESTful',
-    location: 'Faker County, Lorem City'
-  }
+  [
+    {
+      "name": 'API bar and grill',
+      "cuisineId": 3,
+      "location": 'Lorem City'
+    }
+  ]
 ```
 
 - DELETE (/restaurants/delete/:id)
@@ -122,14 +204,20 @@ Requires updated values and the id in req.body:
 ```javascript
   [
     {
-      id: 99,
-      cuisine: 'Mediterranean'
+      "name": 'new name',
+      "cuisine": 'Mediterranean'
     }
   ]
 ```
+- POST (searchhistory/create)
+HTTP response of 201 when request was successful and search query has been added to database in the search_history table.
 
-- GET (/users/:id)
-HTTP response of 200 and returns username of requested user id
+Requires user_id of existing user and a search_query string:
 ```javascript
-  {username: 'mrFakeUser285'}
+[
+  {
+    "userId": 9999900,
+    "searchQuery": "what's for dinner?"
+  }
+]
 ```

@@ -230,18 +230,18 @@ const generateSearchHistoryData = () => {
 // generateSearchHistoryData();
 
 const generateRestaurantCuisineData = () => {
-	writer.pipe(fs.createWriteStream('test_restaurant_cuisine_data.csv'));
+	writer.pipe(fs.createWriteStream('restaurant_cuisine_data.csv'));
 
 	let i = 0;
 	function write() {
 		let ok = true;
 
-		while (restaurantId < 1000 && ok) {
+		while (restaurantId < 10000000 && ok) {
 			i++;
 			restaurantId++;
 			const numberOfCuisines = Math.floor(Math.random() * (3 - 1) + 1);
 			const cuisine1 = Math.floor(Math.random() * (8 - 1) + 1);
-			if (restaurantId === 999) {
+			if (restaurantId === 9999999) {
 				writer.write({
 					id: i,
 					restaurant_id: restaurantId,
@@ -271,18 +271,18 @@ const generateRestaurantCuisineData = () => {
 					cuisine_id: cuisine1
 				});
 			}
-			if (restaurantId % 100 === 0) {
+			if (restaurantId % 100000 === 0) {
 				console.log(restaurantId);
 			}
 		}
-		if (restaurantId < 1000) {
+		if (restaurantId < 1000000) {
 			writer.once('drain', write);
 		}
 	}
 	write();
 };
 
-// generateRestaurantCuisineData();
+generateRestaurantCuisineData();
 
 const generateCassandraCSVData = () => {
 	writer.pipe(fs.createWriteStream('cassandra_data.csv'));
@@ -347,4 +347,4 @@ const generateCassandraCSVData = () => {
 	write();
 };
 
-generateCassandraCSVData();
+// generateCassandraCSVData();

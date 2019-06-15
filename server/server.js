@@ -1,10 +1,13 @@
 require('newrelic');
 const express = require('express');
+const redis = require('redis');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 const db = require('../database/db.js');
+
+const redisClient = redis.createClient();
 
 
 // DB connection
@@ -31,10 +34,10 @@ app.get('/', (req, res) => {
 });
 
 
-app.get('/restaurants/:name', db.getRestaurantsByName);
-app.get('/restaurants/cuisine/:cuisineId', db.getRestaurantsByCuisine);
-app.get('/restaurants/location/:location', db.getRestaurantsByLocation);
-app.get('/nameAndlocation', db.getRestaurantsByNameAndLocation);
+app.get('/restaurants/:name', db.getRestaurantNameCache);
+app.get('/restaurants/cuisine/:cuisineId', db.getRestaurantCuisineCache);
+app.get('/restaurants/location/:location', db.getRestaurantsLocationCache);
+app.get('/nameAndlocation', db.getRestaurantsNameLocationCache);
 app.post('/postRestaurant', db.postRestaurant);
 app.put('/updateRestaurant/:id', db.updateRestaurant);
 app.delete('/deleteRestaurant/:id', db.deleteRestaurant);

@@ -1,7 +1,9 @@
 const { Pool, } = require('pg');
+const redis = require('redis');
 
-// connection.query('DROP DATABASE IF EXISTS Search', () => {});
-// connection.query('CREATE DATABASE Search', () => {
+const redisClient = redis.createClient();
+
+
 const pool = new Pool({
 	user: '',
 	host: 'localhost',
@@ -18,10 +20,26 @@ const getRestaurantsByName = (request, response) => {
 	pool.query('SELECT * FROM restaurants WHERE name = $1 LIMIT 300;', [name], (error, results) => {
 		if (error) {
 			throw error;
+		} else {
+			const restaurantsByName = results.rows;
+			redisClient.setex(name, 3600, JSON.stringify(restaurantsByName));
+			// console.log('getRestaurantsByName Invoked')
+			// console.log('results', results.rows);
+			response.status(200).send(restaurantsByName);
+			// response.status(200).json(results.rows);
 		}
-		// console.log('getRestaurantsByName Invoked')
-		// console.log('results', results.rows);
-		response.status(200).json(results.rows);
+	});
+};
+
+const getRestaurantNameCache = (req, res) => {
+	const { name } = req.params;
+
+	redisClient.get(name, (err, result) => {
+		if (result) {
+			res.send(result);
+		} else {
+			getRestaurantsByName(req, res);
+		}
 	});
 };
 
@@ -33,10 +51,23 @@ const getRestaurantsByCuisine = (request, response) => {
 	pool.query(query, [cuisineId], (error, results) => {
 		if (error) {
 			throw error;
+		} else {
+			const restaurantsByCuisine = results.rows;
+			redisClient.setex(cuisineId, 3600, JSON.stringify(restaurantsByCuisine));
+			response.status(200).send(restaurantsByCuisine);
 		}
-		// console.log('getRestaurantsByCuisine');
-		// console.log('results', results.rows);
-		response.status(200).json(results.rows);
+	});
+};
+
+const getRestaurantCuisineCache = (req, res) => {
+	const { cuisineId } = req.params;
+
+	redisClient.get(cuisineId, (err, result) => {
+		if (result) {
+			res.send(result);
+		} else {
+			getRestaurantsByCuisine(req, res);
+		}
 	});
 };
 
@@ -50,7 +81,22 @@ const getRestaurantsByLocation = (request, response) => {
 			throw error;
 		}
 		// console.log(results.rows);
-		response.status(200).json(results.rows);
+		const restaurantsByLocation = results.rows;
+		redisClient.setex(location, 3600, JSON.stringify(restaurantsByLocation));
+		response.status(200).send(restaurantsByLocation);
+		// response.status(200).json(results.rows);
+	});
+};
+
+const getRestaurantsLocationCache = (req, res) => {
+	const { location } = req.params;
+
+	redisClient.get(location, (err, result) => {
+		if (result) {
+			res.send(result);
+		} else {
+			getRestaurantsByLocation(req, res);
+		}
 	});
 };
 
@@ -61,7 +107,22 @@ const getRestaurantsByNameAndLocation = (req, res) => {
 		if (error) {
 			res.status(400).send('could not get!');
 		}
-		res.status(200).json(results.rows);
+
+		const restaurantsByNameAndLocation = results.rows;
+		redisClient.setex(name + location, 3600, JSON.stringify(restaurantsByNameAndLocation));
+		res.status(200).json(restaurantsByNameAndLocation);
+	});
+};
+
+const getRestaurantsNameLocationCache = (req, res) => {
+	const { name, location } = req.body;
+
+	redisClient.get(name + location, (err, result) => {
+		if (result) {
+			res.send(result);
+		} else {
+			getRestaurantsByNameAndLocation(req, res);
+		}
 	});
 };
 
@@ -89,7 +150,8 @@ const updateRestaurant = (request, response) => {
 	const id = parseInt(request.params.id, 10);
 	const { name, location } = request.body;
 
-	pool.query('UPDATE restaurants SET name = $1, location = $2 WHERE id = $3', [name, location, id], (error, results) => {
+	const query = 'UPDATE restaurants SET name = $1, location = $2 WHERE id = $3';
+	pool.query(query, [name, location, id], (error, results) => {
 		if (error) {
 			throw error;
 		}
@@ -100,7 +162,8 @@ const updateRestaurant = (request, response) => {
 const deleteRestaurant = (request, response) => {
 	const id = parseInt(request.params.id, 10);
 	// console.log('hi');
-	pool.query('DELETE FROM restaurants WHERE id = $1', [id], (error, results) => {
+	const query = 'DELETE FROM restaurants WHERE id = $1';
+	pool.query(query, [id], (error, results) => {
 		if (error) {
 			throw error;
 		}
@@ -111,7 +174,8 @@ const deleteRestaurant = (request, response) => {
 const addSearchHistory = (request, response) => {
 	const { userId, searchQuery } = request.body;
 	// console.log(userId, searchQuery);
-	pool.query('INSERT INTO search_history (user_id, search_query) VALUES ($1, $2)', [userId, searchQuery], (error, results) => {
+	const query = 'INSERT INTO search_history (user_id, search_query) VALUES ($1, $2)';
+	pool.query(query, [userId, searchQuery], (error, results) => {
 		if (error) {
 			throw error;
 		}
@@ -122,10 +186,10 @@ const addSearchHistory = (request, response) => {
 
 module.exports = {
 	pool,
-	getRestaurantsByName,
-	getRestaurantsByCuisine,
-	getRestaurantsByLocation,
-	getRestaurantsByNameAndLocation,
+	getRestaurantNameCache,
+	getRestaurantCuisineCache,
+	getRestaurantsLocationCache,
+	getRestaurantsNameLocationCache,
 	postRestaurant,
 	updateRestaurant,
 	deleteRestaurant,

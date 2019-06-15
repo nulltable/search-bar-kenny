@@ -157,7 +157,7 @@ HTTP response of 200 for successfully retrieving all restaurants of the requeste
   ]
 ```
 
-- GET (/restaurants/nameAndLocation/:name&:location)
+- GET (/nameAndLocation)
 HTTP response of 200 for successfully retrieving all restaurants of the requested name and location. Displays restaurant's name, location, and type of cuisine. Limited to 300 per request.
 
 Request for name='nemo' and location = 'Travonshire':
@@ -181,7 +181,7 @@ Request for name='nemo' and location = 'Travonshire':
   ]
 ```
 
-- POST (/restaurants/create/)
+- POST (/createRestaurant)
 HTTP response of 201 when successfully added a new restaurant to database
 Request to add new restaurant needs the following in req.body:
 ```javascript
@@ -194,11 +194,11 @@ Request to add new restaurant needs the following in req.body:
   ]
 ```
 
-- DELETE (/restaurants/delete/:id)
+- DELETE (/deleteRestaurant/:id)
 HTTP response of 200 when request was successful and restaurant has been deleted from database
 
 
-- UPDATE (/restaurants/update/:id)
+- UPDATE (/updateRestaurant/:id)
 HTTP response of 200 when request was successful and restaurant has been updated.
 Requires updated values and the id in req.body:
 ```javascript
@@ -209,7 +209,7 @@ Requires updated values and the id in req.body:
     }
   ]
 ```
-- POST (searchhistory/create)
+- POST (/postSearchQuery)
 HTTP response of 201 when request was successful and search query has been added to database in the search_history table.
 
 Requires user_id of existing user and a search_query string:

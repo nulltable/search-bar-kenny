@@ -16,14 +16,15 @@ db.pool.connect((err, client, done) => {
 const app = express();
 
 app.use(cors());
-app.use(morgan('dev'));
-app.use(express.static('public'));
-app.use(bodyParser.json());
+// app.use(morgan('dev'));
 app.use(
 	bodyParser.urlencoded({
-		extended: true
+		extended: false
 	})
 );
+app.use(bodyParser.json());
+app.use(express.static('public'));
+
 
 app.get('/', (req, res) => {
 	res.status(200).send();
@@ -33,11 +34,11 @@ app.get('/', (req, res) => {
 app.get('/restaurants/:name', db.getRestaurantsByName);
 app.get('/restaurants/cuisine/:cuisineId', db.getRestaurantsByCuisine);
 app.get('/restaurants/location/:location', db.getRestaurantsByLocation);
-app.get('/restaurants/nameAndLocation/:name&:location', db.getRestaurantsByNameAndLocation);
-app.post('/restaurants/create/', db.postRestaurant);
-app.put('/restaurants/update/:id', db.updateRestaurant);
-app.delete('/restaurants/delete/:id', db.deleteRestaurant);
-app.post('/searchhistory/create', db.addSearchHistory);
+app.get('/nameAndlocation', db.getRestaurantsByNameAndLocation);
+app.post('/postRestaurant', db.postRestaurant);
+app.put('/updateRestaurant/:id', db.updateRestaurant);
+app.delete('/deleteRestaurant/:id', db.deleteRestaurant);
+app.post('/postSearchQuery', db.addSearchHistory);
 
 
 module.exports = app;

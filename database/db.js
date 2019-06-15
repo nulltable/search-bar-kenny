@@ -10,13 +10,17 @@ const pool = new Pool({
 	port: 5432
 });
 
-
 const getRestaurantsByName = (request, response) => {
+	// console.log('body:', request.body.name);
+	// const name = request.body.name;
 	const { name } = request.params;
+	// console.log('REQUEST body', request.params);
 	pool.query('SELECT * FROM restaurants WHERE name = $1 LIMIT 300;', [name], (error, results) => {
 		if (error) {
 			throw error;
 		}
+		// console.log('getRestaurantsByName Invoked')
+		// console.log('results', results.rows);
 		response.status(200).json(results.rows);
 	});
 };
@@ -24,11 +28,14 @@ const getRestaurantsByName = (request, response) => {
 const getRestaurantsByCuisine = (request, response) => {
 	const { cuisineId } = request.params;
 
+	// console.log('request body', request.params);
 	const query = 'select restaurants.name, restaurants.location, cuisines.cuisine from restaurants inner join restaurants_cuisines ON restaurants.id = restaurants_cuisines.restaurant_id INNER JOIN cuisines on restaurants_cuisines.cuisine_id = cuisines.id  WHERE restaurants_cuisines.cuisine_id=$1 limit 300;';
 	pool.query(query, [cuisineId], (error, results) => {
 		if (error) {
 			throw error;
 		}
+		// console.log('getRestaurantsByCuisine');
+		// console.log('results', results.rows);
 		response.status(200).json(results.rows);
 	});
 };
@@ -36,28 +43,30 @@ const getRestaurantsByCuisine = (request, response) => {
 const getRestaurantsByLocation = (request, response) => {
 	const { location } = request.params;
 
+	// console.log(request.params);
 	const query = 'select * from restaurants where location = $1 limit 300';
 	pool.query(query, [location], (error, results) => {
 		if (error) {
 			throw error;
 		}
+		// console.log(results.rows);
 		response.status(200).json(results.rows);
 	});
 };
 
-const getRestaurantsByNameAndLocation = (request, response) => {
-	const { name, location } = request.params;
-
-	pool.query('SELECT * FROM restaurants WHERE name = $1 AND location = $2 LIMIT 300;', [name, location], (error, results) => {
+const getRestaurantsByNameAndLocation = (req, res) => {
+	const { name, location } = req.body;
+	const sql = 'SELECT * FROM restaurants WHERE name = $1 AND location = $2 LIMIT 300;';
+	pool.query(sql, [name, location], (error, results) => {
 		if (error) {
-			throw error;
+			res.status(400).send('could not get!');
 		}
-		response.status(200).json(results.rows);
+		res.status(200).json(results.rows);
 	});
 };
 
 const postRestaurant = (request, response) => {
-	const { name, location, cuisineId } = request.body[0];
+	const { name, location, cuisineId } = request.body;
 	let restaurantId;
 	const query1 = 'INSERT INTO restaurants (name, location) VALUES ($1, $2) RETURNING *';
 	const query2 = 'INSERT INTO restaurants_cuisines (restaurant_id, cuisine_id) VALUES ($1, $2)';
@@ -66,7 +75,6 @@ const postRestaurant = (request, response) => {
 			throw error;
 		} else {
 			restaurantId = result.rows[0].id;
-			console.log(restaurantId);
 			pool.query(query2, [restaurantId, cuisineId], () => {
 				if (error) {
 					throw error;
@@ -79,7 +87,7 @@ const postRestaurant = (request, response) => {
 
 const updateRestaurant = (request, response) => {
 	const id = parseInt(request.params.id, 10);
-	const { name, location } = request.body[0];
+	const { name, location } = request.body;
 
 	pool.query('UPDATE restaurants SET name = $1, location = $2 WHERE id = $3', [name, location, id], (error, results) => {
 		if (error) {
@@ -91,7 +99,7 @@ const updateRestaurant = (request, response) => {
 
 const deleteRestaurant = (request, response) => {
 	const id = parseInt(request.params.id, 10);
-
+	// console.log('hi');
 	pool.query('DELETE FROM restaurants WHERE id = $1', [id], (error, results) => {
 		if (error) {
 			throw error;
@@ -101,9 +109,8 @@ const deleteRestaurant = (request, response) => {
 };
 
 const addSearchHistory = (request, response) => {
-	const { userId, searchQuery } = request.body[0];
-
-	console.log(userId, searchQuery);
+	const { userId, searchQuery } = request.body;
+	// console.log(userId, searchQuery);
 	pool.query('INSERT INTO search_history (user_id, search_query) VALUES ($1, $2)', [userId, searchQuery], (error, results) => {
 		if (error) {
 			throw error;

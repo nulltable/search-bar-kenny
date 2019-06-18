@@ -113,8 +113,7 @@ const generateCuisineData = () => {
 	let i = 0;
 	function write() {
 		let ok = true;
-		while (i < cuisine.length - 1 && ok) {
-			i++;
+		while (i < cuisine.length && ok) {
 			if (i === cuisine.length - 1) {
 				writer.write({
 					id: counter++,
@@ -127,6 +126,7 @@ const generateCuisineData = () => {
 				});
 			}
 			console.log(i);
+			i++;
 		}
 		if (i < cuisine.length) {
 			writer.once('drain', write);
@@ -135,7 +135,7 @@ const generateCuisineData = () => {
 	write();
 };
 
-// generateCuisineData();
+generateCuisineData();
 
 const generateUsersData = () => {
 	const usersWriter = csvWriter();
@@ -282,7 +282,7 @@ const generateRestaurantCuisineData = () => {
 	write();
 };
 
-generateRestaurantCuisineData();
+// generateRestaurantCuisineData();
 
 const generateCassandraCSVData = () => {
 	writer.pipe(fs.createWriteStream('cassandra_data.csv'));

@@ -46,7 +46,7 @@ const getRestaurantNameCache = (req, res) => {
 const getRestaurantsByCuisine = (request, response) => {
 	const { cuisineId } = request.params;
 
-	// console.log('request body', request.params);
+	// console.log('request params', request.params);
 	const query = 'select restaurants.name, restaurants.location, cuisines.cuisine from restaurants inner join restaurants_cuisines ON restaurants.id = restaurants_cuisines.restaurant_id INNER JOIN cuisines on restaurants_cuisines.cuisine_id = cuisines.id  WHERE restaurants_cuisines.cuisine_id=$1 limit 300;';
 	pool.query(query, [cuisineId], (error, results) => {
 		if (error) {

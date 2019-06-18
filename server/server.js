@@ -29,19 +29,19 @@ app.use(bodyParser.json());
 app.use(express.static('public'));
 
 
-app.get('/', (req, res) => {
+app.get('/search', (req, res) => {
 	res.status(200).send();
 });
 
 
-app.get('/restaurants/:name', db.getRestaurantNameCache);
-app.get('/restaurants/cuisine/:cuisineId', db.getRestaurantCuisineCache);
-app.get('/restaurants/location/:location', db.getRestaurantsLocationCache);
-app.get('/nameAndlocation', db.getRestaurantsNameLocationCache);
-app.post('/postRestaurant', db.postRestaurant);
-app.put('/updateRestaurant/:id', db.updateRestaurant);
-app.delete('/deleteRestaurant/:id', db.deleteRestaurant);
-app.post('/postSearchQuery', db.addSearchHistory);
+app.get('/search/restaurantsByName/:name', db.getRestaurantNameCache);
+app.get('/search/restaurantsByCuisine/:cuisineId', db.getRestaurantCuisineCache);
+app.get('/search/restaurantsByLocation/:location', db.getRestaurantsLocationCache);
+app.get('/search/restaurantsByNameAndlocation', db.getRestaurantsNameLocationCache);
+app.post('/search/postRestaurant', db.postRestaurant);
+app.put('/search/updateRestaurant/:id', db.updateRestaurant);
+app.delete('/search/deleteRestaurant/:id', db.deleteRestaurant);
+app.post('/search/postSearchQuery', db.addSearchHistory);
 
 
 module.exports = app;

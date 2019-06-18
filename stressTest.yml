@@ -2,59 +2,59 @@ config:
   target: 'http://localhost:3030'
   phases:
     - duration: 90
-      arrivalRate: 25
+      arrivalRate: 50
   processor: "./my-functions.js"
   defaults:
     headers:
       x-my-service-auth: '987401838271002188298567'
 scenarios:
   - name: "Get a restaurant by name"
-    weight: 4
+    weight: 2
     flow:
     - loop:
       - function: "generateRandomData"
       - get:
-          url: "/restaurants/{{ name }}"
-      count: 10
+          url: "/search/restaurantsByName/{{ name }}"
+      count: 100
   - name: "Get restaurants of a cuisine type"
-    weight: 4
+    weight: 3
     flow:
     - loop: 
       - function: "generateRandomData"
       - get:
-          url: '/restaurants/cuisine/{{cuisineId}}'
+          url: '/search/restaurantsByCuisine/{{cuisineId}}'
           # json: 
           #   cuisineId: "{{ cuisineId }}"
-      count: 20
+      count: 100
   - name: "Get Restaurants by Location"
-    weight: 3
+    weight: 4
     flow: 
     - loop: 
       - function: "generateRandomData"
       - get:
-          url: "/restaurants/location/{{ location }}"
-      count: 10
+          url: "/search/restaurantsByLocation/{{ location }}"
+      count: 100
   - name: "Get Restaurants by Name and Location"
-    weight: 3
+    weight: 2
     flow: 
     - loop: 
       - function: "generateRandomData"
       - get:
-          url: "/nameAndlocation"
+          url: "/search/restaurantsByNameAndlocation"
           json: 
             name: "{{ name }}"
             location: "{{ location }}"
-      count: 10
+      count: 100
   - name: 'Post Restaurant'
     weight: 1
     flow: 
     - loop:
       - function: "generateRandomData"
       - post:
-          url: "/postRestaurant"
+          url: "/search/postRestaurant"
           json: 
             name: "{{ name }}"
             location: "{{ location }}"
             cuisineId: "{{ cuisineId }}"
-      count: 3
+      count: 30
   

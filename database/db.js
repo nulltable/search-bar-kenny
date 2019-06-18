@@ -6,7 +6,8 @@ const redisClient = redis.createClient();
 
 const pool = new Pool({
 	user: '',
-	host: 'localhost',
+	// host: 'localhost',
+	host: 'http://ec2-18-207-189-68.compute-1.amazonaws.com',
 	database: 'search',
 	password: '',
 	port: 5432

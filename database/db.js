@@ -5,11 +5,11 @@ const redisClient = redis.createClient();
 
 
 const pool = new Pool({
-	user: '',
-	host: 'localhost',
-	// host: 'http://ec2-18-207-189-68.compute-1.amazonaws.com',
-	database: 'search',
-	password: '',
+	user: 'power_user',
+	//host: 'localhost',
+	host: '52.54.240.229',
+	database: 'snowplow',
+	password: 'power_user',
 	port: 5432
 });
 

@@ -9,7 +9,6 @@ const db = require('../database/db.js');
 
 const redisClient = redis.createClient();
 
-
 // DB connection
 db.pool.connect((err, client, done) => {
 	console.log('Connected to database!');

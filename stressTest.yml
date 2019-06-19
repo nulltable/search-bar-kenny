@@ -23,8 +23,6 @@ scenarios:
       - function: "generateRandomData"
       - get:
           url: '/search/restaurantsByCuisine/{{cuisineId}}'
-          # json: 
-          #   cuisineId: "{{ cuisineId }}"
       count: 100
   - name: "Get Restaurants by Location"
     weight: 4

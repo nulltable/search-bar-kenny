@@ -6,8 +6,8 @@ const redisClient = redis.createClient();
 
 const pool = new Pool({
 	user: '',
-	// host: 'localhost',
-	host: 'http://ec2-18-207-189-68.compute-1.amazonaws.com',
+	host: 'localhost',
+	// host: 'http://ec2-18-207-189-68.compute-1.amazonaws.com',
 	database: 'search',
 	password: '',
 	port: 5432
@@ -23,7 +23,9 @@ const getRestaurantsByName = (request, response) => {
 			throw error;
 		} else {
 			const restaurantsByName = results.rows;
-			redisClient.setex(name, 3600, JSON.stringify(restaurantsByName));
+			if (name === 'qui' || name === 'nemo') {
+				redisClient.setex(name, 3600, JSON.stringify(restaurantsByName));
+			}
 			// console.log('getRestaurantsByName Invoked')
 			// console.log('results', results.rows);
 			response.status(200).send(restaurantsByName);
@@ -54,7 +56,9 @@ const getRestaurantsByCuisine = (request, response) => {
 			throw error;
 		} else {
 			const restaurantsByCuisine = results.rows;
-			redisClient.setex(cuisineId, 3600, JSON.stringify(restaurantsByCuisine));
+			if (cuisineId === '4' || cuisineId === '6') {
+				redisClient.setex(cuisineId, 3600, JSON.stringify(restaurantsByCuisine));
+			}
 			response.status(200).send(restaurantsByCuisine);
 		}
 	});
@@ -83,9 +87,10 @@ const getRestaurantsByLocation = (request, response) => {
 		}
 		// console.log(results.rows);
 		const restaurantsByLocation = results.rows;
-		redisClient.setex(location, 3600, JSON.stringify(restaurantsByLocation));
+		if (location === 'Travonshire' || location === 'Flossiehaven') {
+			redisClient.setex(location, 3600, JSON.stringify(restaurantsByLocation));
+		}
 		response.status(200).send(restaurantsByLocation);
-		// response.status(200).json(results.rows);
 	});
 };
 
@@ -108,9 +113,13 @@ const getRestaurantsByNameAndLocation = (req, res) => {
 		if (error) {
 			res.status(400).send('could not get!');
 		}
-
 		const restaurantsByNameAndLocation = results.rows;
-		redisClient.setex(name + location, 3600, JSON.stringify(restaurantsByNameAndLocation));
+
+		if ((name === 'nemo') || (name === 'qui')) {
+			if (location === 'Flossiehaven' || location === 'Travonshire') {
+				redisClient.setex(name + location, 3600, JSON.stringify(restaurantsByNameAndLocation));
+			}
+		}
 		res.status(200).json(restaurantsByNameAndLocation);
 	});
 };

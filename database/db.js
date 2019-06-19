@@ -107,7 +107,7 @@ const getRestaurantsLocationCache = (req, res) => {
 };
 
 const getRestaurantsByNameAndLocation = (req, res) => {
-	const { name, location } = req.body;
+	const { name, location } = req.params;
 	const sql = 'SELECT * FROM restaurants WHERE name = $1 AND location = $2 LIMIT 300;';
 	pool.query(sql, [name, location], (error, results) => {
 		if (error) {
@@ -125,7 +125,7 @@ const getRestaurantsByNameAndLocation = (req, res) => {
 };
 
 const getRestaurantsNameLocationCache = (req, res) => {
-	const { name, location } = req.body;
+	const { name, location } = req.params;
 
 	redisClient.get(name + location, (err, result) => {
 		if (result) {

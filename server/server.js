@@ -36,7 +36,7 @@ app.get('/search', (req, res) => {
 app.get('/search/restaurantsByName/:name', db.getRestaurantNameCache);
 app.get('/search/restaurantsByCuisine/:cuisineId', db.getRestaurantCuisineCache);
 app.get('/search/restaurantsByLocation/:location', db.getRestaurantsLocationCache);
-app.get('/search/restaurantsByNameAndlocation', db.getRestaurantsNameLocationCache);
+app.get('/search/restaurantsByNameAndlocation/:name&:location', db.getRestaurantsNameLocationCache);
 app.post('/search/postRestaurant', db.postRestaurant);
 app.put('/search/updateRestaurant/:id', db.updateRestaurant);
 app.delete('/search/deleteRestaurant/:id', db.deleteRestaurant);
